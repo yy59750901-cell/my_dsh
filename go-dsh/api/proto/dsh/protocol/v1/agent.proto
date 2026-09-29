@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package dsh.protocol.v1;
+
+option go_package = "github.com/yy59750901/go-dsh/gen/go/dsh/protocol/v1;protocolv1";
+
+import "dsh/protocol/v1/common.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+message UserMessage {
+  string message_id = 1;
+  repeated ContentPart content = 2;
+  google.protobuf.Struct metadata = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+enum AgentState {
+  AGENT_STATE_UNSPECIFIED = 0;
+  AGENT_STATE_IDLE = 1;
+  AGENT_STATE_RUNNING = 2;
+  AGENT_STATE_WAITING_APPROVAL = 3;
+  AGENT_STATE_CANCELLING = 4;
+  AGENT_STATE_FAILED = 5;
+  AGENT_STATE_DISPOSED = 6;
+}
+
+message AgentStatus {
+  string session_id = 1;
+  AgentState state = 2;
+  string active_turn_id = 3;
+  string active_step_id = 4;
+  uint32 queued_messages = 5;
+  Error last_error = 6;
+  uint32 active_attempt = 7;
+  uint32 retry_count = 8;
+  uint32 next_turn_messages = 9;
+  uint32 next_step_messages = 10;
+  Cancellation cancellation = 11;
+  uint64 last_event_seq = 12;
+}
+
+message SubmitPromptRequest {
+  string request_id = 1;
+  string session_id = 2;
+  UserMessage message = 3;
+  string idempotency_key = 4;
+}
+
+message SubmitPromptResponse {
+  Receipt receipt = 1;
+  AgentStatus status = 2;
+  bool no_op = 3;
+}
+
+message SteerRequest {
+  string request_id = 1;
+  string session_id = 2;
+  UserMessage message = 3;
+  string idempotency_key = 4;
+}
+
+message InjectRequest {
+  string request_id = 1;
+  string session_id = 2;
+  string source = 3;
+  repeated ContentPart content = 4;
+  google.protobuf.Struct metadata = 5;
+  string idempotency_key = 6;
+}
+
+message CancelAgentRequest {
+  string request_id = 1;
+  string session_id = 2;
+  Cancellation cancellation = 3;
+  bool keep_inbox = 4;
+  string idempotency_key = 5;
+}
+
+message GetAgentStatusRequest {
+  string session_id = 1;
+}
+
+service AgentService {
+  rpc SubmitPrompt(SubmitPromptRequest) returns (SubmitPromptResponse);
+  rpc Steer(SteerRequest) returns (SubmitPromptResponse);
+  rpc Inject(InjectRequest) returns (SubmitPromptResponse);
+  rpc Cancel(CancelAgentRequest) returns (SubmitPromptResponse);
+  rpc GetStatus(GetAgentStatusRequest) returns (AgentStatus);
+}

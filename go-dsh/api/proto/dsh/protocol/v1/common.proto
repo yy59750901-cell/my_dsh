@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package dsh.protocol.v1;
+
+option go_package = "github.com/yy59750901/go-dsh/gen/go/dsh/protocol/v1;protocolv1";
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+message SchemaVersion {
+  uint32 major = 1;
+  uint32 minor = 2;
+}
+
+message TraceContext {
+  string trace_id = 1;
+  string span_id = 2;
+  string parent_span_id = 3;
+}
+
+message Usage {
+  uint64 input_tokens = 1;
+  uint64 output_tokens = 2;
+  uint64 cache_read_tokens = 3;
+  uint64 cache_write_tokens = 4;
+  optional uint64 reasoning_tokens = 5;
+  bool cache_read_tokens_present = 6;
+  bool cache_write_tokens_present = 7;
+}
+
+enum ErrorCategory {
+  ERROR_CATEGORY_UNSPECIFIED = 0;
+  ERROR_CATEGORY_VALIDATION = 1;
+  ERROR_CATEGORY_AUTHENTICATION = 2;
+  ERROR_CATEGORY_AUTHORIZATION = 3;
+  ERROR_CATEGORY_NOT_FOUND = 4;
+  ERROR_CATEGORY_CONFLICT = 5;
+  ERROR_CATEGORY_RATE_LIMIT = 6;
+  ERROR_CATEGORY_POLICY = 7;
+  ERROR_CATEGORY_APPROVAL = 8;
+  ERROR_CATEGORY_MODEL = 9;
+  ERROR_CATEGORY_TOOL = 10;
+  ERROR_CATEGORY_STORAGE = 11;
+  ERROR_CATEGORY_TRANSPORT = 12;
+  ERROR_CATEGORY_RESOURCE = 13;
+  ERROR_CATEGORY_INTERNAL = 14;
+  ERROR_CATEGORY_CANCELLATION = 15;
+}
+
+enum CancelSource {
+  CANCEL_SOURCE_UNSPECIFIED = 0;
+  CANCEL_SOURCE_USER = 1;
+  CANCEL_SOURCE_CLIENT_DISCONNECT = 2;
+  CANCEL_SOURCE_DEADLINE = 3;
+  CANCEL_SOURCE_PARENT = 4;
+  CANCEL_SOURCE_POLICY = 5;
+  CANCEL_SOURCE_SESSION_DISPOSE = 6;
+  CANCEL_SOURCE_SERVER_SHUTDOWN = 7;
+  CANCEL_SOURCE_TOOL_PROVIDER = 8;
+  CANCEL_SOURCE_MODEL_PROVIDER = 9;
+  CANCEL_SOURCE_SYSTEM = 10;
+}
+
+enum ReplayPolicy {
+  REPLAY_POLICY_UNSPECIFIED = 0;
+  REPLAY_POLICY_REQUIRED = 1;
+  REPLAY_POLICY_IGNORABLE = 2;
+}
+
+message Cancellation {
+  CancelSource source = 1;
+  string reason = 2;
+  google.protobuf.Timestamp cancelled_at = 3;
+}
+
+message Error {
+  string code = 1;
+  ErrorCategory category = 2;
+  string message = 3;
+  bool retryable = 4;
+  google.protobuf.Struct details = 5;
+  int32 upstream_status = 6;
+  string upstream_code = 7;
+  Cancellation cancellation = 8;
+  string trace_id = 9;
+}
+
+message Receipt {
+  string request_id = 1;
+  string session_id = 2;
+  string command_id = 3;
+  uint64 accepted_seq = 4;
+  string placement = 5;
+  bool duplicate = 6;
+  google.protobuf.Timestamp accepted_at = 7;
+  string input_id = 8;
+  string target = 9;
+  string idempotency_key = 10;
+}
+
+message ContentPart {
+  string type = 1;
+  string text = 2;
+  google.protobuf.Struct data = 3;
+}
+
+message PageRequest {
+  uint32 limit = 1;
+  string cursor = 2;
+}

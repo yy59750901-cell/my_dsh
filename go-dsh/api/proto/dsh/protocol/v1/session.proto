@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package dsh.protocol.v1;
+
+option go_package = "github.com/yy59750901/go-dsh/gen/go/dsh/protocol/v1;protocolv1";
+
+import "dsh/protocol/v1/common.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+message Session {
+  string id = 1;
+  string tenant_id = 2;
+  string workspace_id = 3;
+  string parent_id = 4;
+  optional uint64 fork_seq = 5;
+  string status = 6;
+  uint64 last_seq = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp archived_at = 10;
+}
+
+enum SurfaceOperationKind {
+  SURFACE_OPERATION_KIND_UNSPECIFIED = 0;
+  SURFACE_OPERATION_KIND_APPEND = 1;
+  SURFACE_OPERATION_KIND_REPLACE = 2;
+}
+
+message SurfaceOperation {
+  SurfaceOperationKind kind = 1;
+  uint64 replace_start_seq = 2;
+  uint64 replace_end_seq = 3;
+}
+
+message EventEnvelope {
+  SchemaVersion schema_version = 1;
+  string event_type = 2;
+  string event_id = 3;
+  string session_id = 4;
+  uint64 seq = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+  google.protobuf.Timestamp committed_at = 7;
+  ReplayPolicy replay_policy = 8;
+  google.protobuf.Struct data = 9;
+  string turn_id = 10;
+  string step_id = 11;
+  string call_id = 12;
+  TraceContext trace = 13;
+  string causation_event_id = 14;
+  repeated uint64 source_event_seqs = 15;
+  google.protobuf.Struct extensions = 16;
+  SurfaceOperation surface_operation = 17;
+}
+
+message CreateSessionRequest {
+  string request_id = 1;
+  string tenant_id = 2;
+  string workspace_id = 3;
+  string parent_id = 4;
+  optional uint64 fork_seq = 5;
+}
+
+message CreateSessionResponse {
+  Session session = 1;
+}
+
+message GetSessionRequest {
+  string session_id = 1;
+}
+
+message GetSessionResponse {
+  Session session = 1;
+}
+
+message ListEventsRequest {
+  string session_id = 1;
+  uint64 after_seq = 2;
+  uint32 limit = 3;
+}
+
+message ListEventsResponse {
+  repeated EventEnvelope events = 1;
+  uint64 head_seq = 2;
+  bool has_more = 3;
+}
+
+message SubscribeEventsRequest {
+  string session_id = 1;
+  uint64 after_seq = 2;
+}
+
+message ForkSessionRequest {
+  string request_id = 1;
+  string source_session_id = 2;
+  uint64 through_seq = 3;
+  string workspace_id = 4;
+}
+
+message ForkSessionResponse {
+  Session session = 1;
+}
+
+service SessionService {
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+  rpc SubscribeEvents(SubscribeEventsRequest) returns (stream EventEnvelope);
+  rpc ForkSession(ForkSessionRequest) returns (ForkSessionResponse);
+}

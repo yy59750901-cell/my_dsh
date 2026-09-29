@@ -1,0 +1,10 @@
+{
+  "mode": "openai",
+  "model": "glm-5-2-260617",
+  "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+  "api_key": "",
+  "http_addr": "127.0.0.1:18081",
+  "grpc_addr": "127.0.0.1:19091",
+  "db_path": "../.workbuddy/dsh/real.db",
+  "workspace": "../.workbuddy/dsh/real-workspace"
+}

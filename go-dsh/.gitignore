@@ -1,0 +1,15 @@
+.DS_Store
+.tools/bin/*
+!.tools/bin/.gitkeep
+.tools/proto-current.pb
+bin/
+coverage.out
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+!.env.example
+config.local.json
+*.local.json
+.workbuddy/

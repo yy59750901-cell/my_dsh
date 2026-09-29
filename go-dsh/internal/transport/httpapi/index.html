@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DSH · 本地工作台</title>
+<style>
+:root{color-scheme:light;--bg:#f5f7fa;--ink:#243047;--muted:#7d8799;--line:#e7ebf2;--blue:#4169de;--soft:#edf2ff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,-apple-system,"PingFang SC",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:9px;padding:8px 13px;background:white;color:var(--ink)}button:hover{border-color:#9cafec;background:var(--soft)}button:disabled{opacity:.45;cursor:default}.primary{background:var(--blue);color:white;border-color:var(--blue)}.primary:hover{background:#3359c9;color:white}input,textarea,select{border:1px solid var(--line);border-radius:8px;padding:9px;background:white;color:var(--ink);outline:none}input:focus,textarea:focus{border-color:var(--blue)}header{height:70px;padding:0 26px;display:flex;align-items:center;gap:15px;background:white;border-bottom:1px solid var(--line)}.logo{font-weight:800;font-size:22px;letter-spacing:2px;color:var(--blue)}.sub{color:var(--muted);font-size:12px}.badge{border-radius:20px;background:var(--soft);color:#4b63a8;padding:4px 11px;font-size:12px}.auth{margin-left:auto;display:flex;gap:8px;align-items:center}.auth input{width:180px}.layout{display:grid;grid-template-columns:238px minmax(360px,1fr) 345px;height:calc(100vh - 70px)}aside{padding:22px 16px;border-right:1px solid var(--line);overflow:auto}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.section-head h2{margin:0;font-size:13px;letter-spacing:1px}.session{display:block;width:100%;text-align:left;margin:7px 0;padding:12px;border-color:transparent;background:transparent;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.session.active{background:white;box-shadow:0 3px 12px #23346108;border-color:#dbe4ff;color:var(--blue)}.side-note{margin-top:24px;padding:13px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}main{display:flex;flex-direction:column;min-height:0;background:#fcfdff}.toolbar{padding:18px 25px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}.toolbar h1{font-size:17px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.toolbar button{margin-left:auto}#messages{overflow:auto;flex:1;padding:25px;scroll-behavior:smooth}.empty{text-align:center;margin:18vh auto;color:var(--muted)}.empty strong{display:block;font-size:24px;color:#52627e;font-weight:500;margin-bottom:12px}.message{max-width:850px;margin:0 auto 22px}.message h3{font-size:12px;color:var(--muted);font-weight:500;margin:0 0 7px}.bubble{white-space:pre-wrap;overflow-wrap:anywhere;background:white;border:1px solid var(--line);border-radius:12px;padding:15px 18px;box-shadow:0 2px 7px #20365903}.user .bubble{background:var(--soft);border-color:#e1e8fd}.tool .bubble{border-left:3px solid #76a79d;background:#f7fbfa}.approval .bubble{border-left:3px solid #d7a852;background:#fffaf0}.actions{display:flex;gap:8px;margin-top:10px}.composer{padding:15px 24px 20px;border-top:1px solid var(--line);background:white}.composer textarea{width:100%;resize:vertical;min-height:90px;max-height:220px;border:0;padding:4px}.compose-bottom{display:flex;align-items:center;gap:9px}.compose-bottom .sub{flex:1}#notice{min-height:23px;color:#977039;font-size:12px}.trace{border-left:1px solid var(--line);border-right:0;background:#f8f9fc;display:flex;flex-direction:column;min-height:0}.tabs{display:flex;gap:6px;margin-bottom:14px}.tabs button{font-size:12px;padding:6px 10px}#event-list{overflow:auto;flex:1;min-height:100px}.event-row{display:block;text-align:left;width:100%;border:0;border-radius:6px;background:transparent;font:11px/1.5 ui-monospace,monospace;padding:7px;color:#6b7790}.event-row:hover{background:#e9edf7}#inspector{white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;flex:1;margin:14px 0 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:white;font:11px/1.6 ui-monospace,monospace;color:#5a6780;min-height:100px}.status{font-size:11px;color:var(--muted)}.danger{color:#b65757}.hidden{display:none!important}@media(max-width:1100px){.layout{grid-template-columns:200px minmax(330px,1fr) 265px}.auth input{width:130px}header{padding:0 16px}}@media(max-width:850px){.layout{grid-template-columns:170px 1fr}.trace{display:none}.auth label,header>.sub{display:none}}@media(max-width:560px){header{height:auto;min-height:80px;flex-wrap:wrap;padding:10px}.auth{margin:0}.layout{height:calc(100vh - 110px);grid-template-columns:110px minmax(0,1fr)}aside{padding:12px 6px}.toolbar,#messages,.composer{padding:12px}.compose-bottom{flex-wrap:wrap}.side-note{display:none}}
+#task-panel textarea{width:100%;min-height:100px;resize:vertical}.task-actions{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.task-card{padding:12px;margin:10px 0;background:white;border:1px solid var(--line);border-radius:10px;overflow-wrap:anywhere}.task-card h3{font-size:13px;margin:0 0 6px}.task-card p{white-space:pre-wrap;margin:7px 0}.task-card a{color:var(--blue)}#task-notice{font-size:12px;color:var(--muted);white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header><span class="logo">DSH</span><span class="sub">本地 Agent 工作台</span><span id="mode" class="badge">尚未连接</span><div class="auth"><label class="sub" for="token">访问令牌</label><input id="token" type="password" placeholder="可选 · 仅保存在内存" autocomplete="off" spellcheck="false"><button id="connect">连接</button></div></header>
+<div class="layout">
+<aside><div class="section-head"><h2>会话</h2><button id="new-session" title="新建会话">＋ 新建</button></div><div id="sessions"></div><div class="side-note">本机 · 单用户<br>会话与轨迹由服务持久化。<br>刷新后重放历史，断线按序号续传。<br>令牌不写入浏览器存储。</div></aside>
+<main><div class="toolbar"><h1 id="title">开始一次新的对话</h1><span id="connection" class="status">离线</span><button id="compact" title="仅空闲且无排队输入时可用；完整审计记录保留" disabled>人工摘要压缩</button><button id="discard-compact" class="hidden">放弃摘要重试</button><button id="cancel" class="danger" disabled>取消执行</button></div><div id="messages"><div class="empty"><strong>让想法，从这里开始</strong>新建或选择一个会话。<br>输入「使用工具」可体验 Demo 的 echo 调用。</div></div><div class="composer"><textarea id="prompt" placeholder="输入消息…  Ctrl / ⌘ + Enter 发送" aria-label="消息内容"></textarea><div id="notice" role="status" aria-live="polite"></div><div class="compose-bottom"><select id="action" aria-label="输入类型"><option value="prompts">发送消息</option><option value="steer">引导下一步</option><option value="inject">注入上下文</option></select><span class="sub">工具操作以服务端审批为准</span><button id="discard" class="hidden">放弃重试</button><button id="send" class="primary" disabled>发送</button></div></div></main>
+<aside class="trace"><div class="section-head"><h2>执行轨迹</h2><span id="cursor" class="status">SEQ 0</span></div><div class="tabs"><button id="show-events">事件</button><button id="show-context">上下文</button><button id="show-tools">工具</button><button id="show-tasks">任务</button></div><section id="task-panel" class="hidden"><p class="sub">单用户 · 同 workspace · 非沙箱。仅用户手工创建，尚未接入 LLM 自动 spawn。计划任务仅提供 API。</p><label for="task-input">子任务提示词 / 工作流每行一个顺序节点</label><textarea id="task-input" placeholder="填写子任务；创建工作流时每行一节点"></textarea><div class="task-actions"><button id="new-child">新建子任务</button><button id="new-workflow">新建顺序工作流</button><button id="retry-task" class="hidden">重试原编排请求</button><button id="discard-task" class="hidden">放弃编排重试</button></div><button id="cancel-tree" class="danger">停止子任务并永久关闭编排</button><p id="task-notice" role="status"></p><p class="sub">工作流列表由 jobs 聚合，可能缺少未产生首个 job 的工作流；本页创建的工作流会单独跟踪。暂停仅阻止后续节点，当前节点继续执行。</p><div id="task-list"></div></section><div id="event-list"></div><pre id="inspector">选择事件，查看脱敏后的原始数据。</pre></aside>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const state={token:'',id:'',seq:0n,version:0,controller:null,cards:new Map(),approvals:new Map(),attempts:new Map(),busy:false,pending:null,compactPending:null,ready:false,synced:false,canCompact:false,statusRequest:0,orchestration:false,taskTab:false,taskController:null,taskPending:null,knownWorkflows:[]};
+const storage={get(k){try{return sessionStorage.getItem(k)}catch{return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch{}},remove(k){try{sessionStorage.removeItem(k)}catch{}}};
+const notice=text=>{$('notice').textContent=text};
+const pretty=value=>JSON.stringify(value,null,2);
+const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
+function headers(json=false){const h={};if(state.token)h.Authorization='Bearer '+state.token;if(json)h['Content-Type']='application/json';return h}
+async function request(path,{method='GET',body,signal,key}={}){
+ const h=headers(body!==undefined);if(key)h['Idempotency-Key']=key;
+ const r=await fetch(path,{method,headers:h,body:body===undefined?undefined:JSON.stringify(body),signal,cache:'no-store',redirect:'error'});
+ if(!r.ok){const hints={busy:'编排协调器忙，请用原请求重试',state:'当前状态不允许操作，可能已终止或已永久关闭编排',unavailable:'服务暂不可用或编排 Manager 未配置',context_busy:'会话正在运行或有排队输入，请等待完全空闲',context_empty:'没有可压缩的历史',context_summary:'摘要不能为空，请手工填写',context_changed:'历史已变化，请基于当前历史重新填写摘要'};let category='';try{category=(await r.json()).error?.category||''}catch{}const e=new Error(hints[category]||(r.status===401?'访问令牌无效，请重新连接':'请求失败（'+r.status+'）'));e.status=r.status;throw e}
+ return r.json();
+}
+function buttons(){ $('send').disabled=!state.ready||!state.id||state.busy||!!state.compactPending;$('cancel').disabled=!state.ready||!state.id;$('compact').disabled=!state.ready||!state.id||state.busy||!!state.pending||!state.synced||!state.canCompact;$('compact').textContent=state.compactPending?'重试原摘要':'人工摘要压缩';$('discard-compact').classList.toggle('hidden',!state.compactPending);$('discard-compact').disabled=state.busy;$('send').textContent=state.pending?'重试原请求':'发送';$('discard').classList.toggle('hidden',!state.pending);$('action').disabled=!!state.pending||state.busy;taskButtons(); }
+function previewHead(value){if(typeof value!=='string'||!/^[1-9][0-9]*$/.test(value))throw new Error('无效的上下文版本');const head=BigInt(value);if(head>18446744073709551615n)throw new Error('上下文版本超出范围');return head}
+function restoreCompact(){state.compactPending=null;try{const p=JSON.parse(storage.get('dsh.compact.'+state.id)||'null');if(p&&typeof p.summary==='string'&&p.summary.trim()){previewHead(p.expected_head);state.compactPending={summary:p.summary,expected_head:p.expected_head}}}catch{}}
+function rememberCompact(){const key='dsh.compact.'+state.id;if(state.compactPending)storage.set(key,JSON.stringify(state.compactPending));else storage.remove(key);buttons()}
+async function refreshStatus(version,signal){
+ const check=++state.statusRequest;
+ try{const data=await request('/api/sessions/'+encodeURIComponent(state.id),{signal});if(version!==state.version||check!==state.statusRequest||signal.aborted)return;state.canCompact=data.status.state==='idle'&&data.status.canCompact===true&&BigInt(data.status.lastEventSeq)>=state.seq;buttons()}
+ catch{if(version===state.version&&check===state.statusRequest){state.canCompact=false;buttons()}}
+}
+function rememberPending(){const key='dsh.pending.'+state.id;if(state.pending)storage.set(key,JSON.stringify(state.pending));else storage.remove(key);buttons()}
+function card(key,label,kind){
+ if(state.cards.has(key))return state.cards.get(key);
+ if($('messages').querySelector('.empty'))$('messages').replaceChildren();
+ const root=el('article',undefined,'message '+(kind||'')),title=el('h3',label),body=el('div','', 'bubble');root.append(title,body);$('messages').append(root);
+ const value={root,title,body};state.cards.set(key,value);return value;
+}
+function messageText(m){return (m?.content||[]).map(b=>b.text|| (b.type==='tool-call'?b.tool_name+' '+(b.arguments_json_raw||''):b.tool_result?pretty(b.tool_result):'')).join('\n')}
+function event(e){
+ const seq=BigInt(e.seq);if(seq<=state.seq)return;
+ if(seq!==state.seq+1n)throw new Error('事件序号不连续，正在恢复');
+ const nearBottom=$('messages').scrollHeight-$('messages').scrollTop-$('messages').clientHeight<120;
+ const d=e.data||{},type=e.eventType,step=e.stepId||'';
+ const row=el('button',String(e.seq).padStart(4,'0')+'  '+type,'event-row');row.addEventListener('click',()=>{$('inspector').textContent=pretty(e)});$('event-list').append(row);while($('event-list').children.length>500)$('event-list').firstChild.remove();
+ if(type==='model/requested')state.attempts.set(step,d.attempt||1);
+ if(type==='user/message'){
+  const message=d.message||d,replaced=e.surfaceOp?.op==='replace';
+  if(replaced){$('messages').replaceChildren();state.cards.clear();state.approvals.clear();state.attempts.clear()}
+  card('event:'+e.seq,replaced?'人工摘要 · 完整审计记录保留':message.role==='system'?'注入上下文':'你','user').body.textContent=messageText(message)
+ }
+ if(type==='assistant/chunk'){
+  const c=d.chunk||{},key='assistant:'+step+':'+d.attempt;
+  if(c.kind==='text-delta'||c.kind==='reasoning-delta'){const v=card(key,c.kind==='reasoning-delta'?'思考中':'助手 · 生成中');v.body.append(document.createTextNode(c.text||''))}
+  if(c.kind==='tool-call-delta'){const v=card('delta:'+step+':'+(c.tool_call_id||c.index),'工具调用 · '+(c.tool_name||''),'tool');v.body.append(document.createTextNode(c.arguments_delta||''))}
+ }
+ if(type==='assistant/message'){const v=card('assistant:'+step+':'+(d.attempt||state.attempts.get(step)||1),'助手');v.title.textContent='助手';v.body.textContent=messageText(d.message)}
+ if(type==='model/error'){const v=state.cards.get('assistant:'+step+':'+(d.attempt||state.attempts.get(step)||1));if(v)v.title.textContent='本次尝试未完成 · 不进入模型上下文'}
+ if(type==='tool/call'){const c=d.call||{};card('call:'+e.callId,'工具 · '+(c.Name||'未知'),'tool').body.textContent=pretty(c.Arguments||{})}
+ if(type==='tool/result')card('result:'+e.callId,'工具结果','tool').body.textContent=messageText(d.message);
+ if(type==='approval/requested'){
+  const v=card('approval:'+d.approval_id,'需要你的审批','approval');v.body.textContent='工具调用 '+d.call_id+' 等待确认。';
+  const actions=el('div',undefined,'actions'),id=state.id;
+  for(const allow of [true,false]){const b=el('button',allow?'允许执行':'拒绝');b.addEventListener('click',async()=>{for(const x of actions.children)x.disabled=true;try{await request('/api/sessions/'+encodeURIComponent(id)+'/approvals/'+encodeURIComponent(d.approval_id),{method:'POST',body:{allow}})}catch(err){notice(err.message);for(const x of actions.children)x.disabled=false}});actions.append(b)}
+  v.body.append(actions);state.approvals.set(d.approval_id,v);
+ }
+ if(type==='approval/resolved'){const v=state.approvals.get(d.approval_id);if(v){v.body.textContent=d.allow?'已批准':'已拒绝';v.title.textContent='审批已完成'}}
+ if(type==='turn/start')$('connection').textContent='执行中';
+ if(type==='turn/end')$('connection').textContent='已连接 · 空闲';
+ state.seq=seq;state.canCompact=false;++state.statusRequest;buttons();$('cursor').textContent='SEQ '+seq;
+ if(nearBottom)$('messages').scrollTop=$('messages').scrollHeight;
+}
+function wait(ms,signal){return new Promise(resolve=>{if(signal.aborted)return resolve();const done=()=>{clearTimeout(t);signal.removeEventListener('abort',done);resolve()},t=setTimeout(done,ms);signal.addEventListener('abort',done,{once:true})})}
+async function follow(version,signal){
+ let delay=500;
+ while(!signal.aborted&&version===state.version){
+  let reader;
+  try{
+   const r=await fetch('/api/sessions/'+encodeURIComponent(state.id)+'/stream?after='+state.seq,{headers:{...headers(),'Last-Event-ID':String(state.seq)},signal,cache:'no-store',redirect:'error'});
+   if(!r.ok){if(r.status===401||r.status===403||r.status===404){state.synced=false;state.canCompact=false;buttons();notice('连接被拒绝（'+r.status+'），请重新连接或选择会话');return}throw new Error('连接中断')}
+   reader=r.body.getReader();const decoder=new TextDecoder();let buffer='';$('connection').textContent='实时连接';state.synced=true;void refreshStatus(version,signal);delay=500;
+   while(!signal.aborted){
+    const {value,done}=await reader.read();if(done)throw new Error('连接中断');buffer+=decoder.decode(value,{stream:true});
+    const before=state.seq;let end;while((end=buffer.indexOf('\n\n'))>=0){const frame=buffer.slice(0,end);buffer=buffer.slice(end+2);const lines=frame.split('\n');if(lines.some(l=>l==='event: error'))throw new Error('流暂不可用');const data=lines.filter(l=>l.startsWith('data:')).map(l=>l.slice(5).trimStart()).join('\n');if(data&&version===state.version)event(JSON.parse(data))}
+    if(state.seq!==before)void refreshStatus(version,signal);
+    if(buffer.length>8*1024*1024)throw new Error('事件过大');
+   }
+  }catch(err){if(signal.aborted||version!==state.version)return;state.synced=false;state.canCompact=false;++state.statusRequest;buttons();$('connection').textContent='断线 · 游标续传';}
+  finally{if(reader){try{await reader.cancel()}catch{}reader.releaseLock()}}
+  await wait(delay,signal);delay=Math.min(delay*2,8000);
+ }
+}
+async function select(id,title){
+ state.taskController?.abort();state.controller?.abort();const version=++state.version;state.controller=new AbortController();const signal=state.controller.signal;state.id=id;state.seq=0n;state.synced=false;state.canCompact=false;state.cards.clear();state.approvals.clear();state.attempts.clear();state.pending=null;
+ storage.set('dsh.selected',id);try{const p=JSON.parse(storage.get('dsh.pending.'+id)||'null');if(p&&typeof p.text==='string'&&typeof p.key==='string'&&['prompts','steer'].includes(p.action))state.pending=p}catch{}
+ restoreCompact();restoreTasks();$('task-list').replaceChildren();$('task-notice').textContent='';
+ if(state.compactPending)notice('上次摘要结果未确认，重试会保留原摘要及预览版本。');else if(state.pending){$('prompt').value=state.pending.text;$('action').value=state.pending.action;notice('上次发送结果未确认，可用原幂等键重试。')}else notice('');
+ $('title').textContent=title||id;$('messages').replaceChildren();$('event-list').replaceChildren();$('inspector').textContent='选择事件，查看脱敏后的原始数据。';$('cursor').textContent='SEQ 0';buttons();
+ for(const n of $('sessions').children)n.classList.toggle('active',n.dataset.id===id);
+ try{
+  let more=true;while(more){const page=await request('/api/sessions/'+encodeURIComponent(id)+'/events?after='+state.seq+'&limit=1000',{signal});if(version!==state.version)return;for(const e of page.events)event(e);more=page.hasMore}
+  if(!state.cards.size){const n=el('div',undefined,'empty');n.append(el('strong','对话已就绪'),el('span','输入消息，查看可追溯的执行过程。'));$('messages').append(n)}
+  state.synced=true;await refreshStatus(version,signal);if(version!==state.version||signal.aborted)return;
+  void follow(version,signal);if(state.taskTab)startTaskWatch();
+  return true;
+ }catch(err){if(!signal.aborted)notice(err.message);return false}
+}
+async function sessions(selectID){
+ const data=await request('/api/sessions');$('sessions').replaceChildren();
+ for(const s of data.sessions){const b=el('button',s.title||'未命名会话','session');b.dataset.id=s.id;b.classList.toggle('active',s.id===state.id);b.addEventListener('click',()=>{if(!state.busy)void select(s.id,s.title)});$('sessions').append(b)}
+ if(selectID){const s=data.sessions.find(s=>s.id===selectID)||data.sessions[0];if(s)await select(s.id,s.title)}
+}
+async function connect(){
+ if(state.busy)return;
+ state.taskController?.abort();state.controller?.abort();++state.version;state.ready=false;state.synced=false;state.canCompact=false;buttons();state.token=$('token').value;$('token').value='';
+ try{const info=await request('/api/info');state.orchestration=info.orchestrationAvailable===true;$('mode').textContent=info.label+' · '+info.model;state.ready=true;buttons();await sessions(state.id||storage.get('dsh.selected')||'first');notice(state.compactPending?'可用原摘要及预览版本重试上次压缩。':state.pending?'可重试上次未确认的请求。':'')}
+ catch(err){notice(err.message);$('connection').textContent='未连接'}
+}
+$('connect').addEventListener('click',connect);
+$('new-session').addEventListener('click',async()=>{if(!state.ready)return notice('请先连接');if(state.busy)return;const title=window.prompt('会话名称','新的会话');if(title===null)return;try{const s=await request('/api/sessions',{method:'POST',body:{title}});await sessions(s.id)}catch(err){notice(err.message)}});
+async function send(){
+ if(state.busy||!state.id||!state.ready||state.compactPending)return;
+ const text=$('prompt').value;if(!state.pending&&!text.trim())return;
+ const id=state.id,action=state.pending?.action||$('action').value;
+ if(!state.pending&&action!=='inject'){state.pending={text,key:crypto.randomUUID(),action};rememberPending()}
+ const pending=state.pending||{text,action};state.busy=true;buttons();notice('提交中…');
+ try{await request('/api/sessions/'+encodeURIComponent(id)+'/'+pending.action,{method:'POST',body:{text:pending.text},key:pending.key});state.pending=null;rememberPending();$('prompt').value='';notice(action==='inject'?'上下文已注入；不会单独启动空闲会话。':'已提交，等待执行。')}
+ catch(err){notice(err.message+(action==='inject'?'；注入不支持幂等重试，请先检查轨迹。':'；重试将复用原消息和幂等键。'))}
+ finally{state.busy=false;buttons();void refreshStatus(state.version,state.controller.signal)}
+}
+async function compact(){
+ if($('compact').disabled)return;
+ const id=state.id,title=$('title').textContent,version=state.version;
+ state.busy=true;buttons();
+ try{
+  if(!state.compactPending){
+   notice('读取待摘要的上下文版本…');
+   const view=await request('/api/sessions/'+encodeURIComponent(id)+'/context');
+   if(version!==state.version)return;
+   const head=previewHead(view.headSeq);$('inspector').textContent=pretty(view);
+   const summary=window.prompt('人工摘要压缩：基于预览 SEQ '+head+' 自行填写摘要，不会调用模型自动生成。\n仅替换模型上下文，完整审计记录保留；期间历史变化会拒绝提交。','');
+   if(summary===null)return notice('已取消人工摘要。');
+   if(!summary.trim())return notice('摘要不能为空，请手工填写；未提交压缩。');
+   state.compactPending={summary,expected_head:String(head)};rememberCompact();
+  }
+  notice('正在提交人工摘要…');
+  await request('/api/sessions/'+encodeURIComponent(id)+'/compact',{method:'POST',body:state.compactPending});
+  state.compactPending=null;rememberCompact();
+  if(version===state.version){const restored=await select(id,title);notice(restored?'人工摘要已应用；已从事件日志重建，完整审计记录保留。':'压缩已提交，但重放未完成，请重新连接。')}
+ }catch(err){notice(err.message+(state.compactPending?'；原摘要及预览版本已保留，重试不会更新版本。若历史已变化，请放弃摘要重试后重新预览并填写。':''))}
+ finally{state.busy=false;buttons();void refreshStatus(state.version,state.controller.signal)}
+}
+$('compact').addEventListener('click',compact);
+$('discard-compact').addEventListener('click',()=>{if(state.busy||!state.compactPending)return;if(window.confirm('压缩可能已经提交，请先检查轨迹。放弃原摘要重试后，需要重新预览并手工填写新摘要，是否继续？')){state.compactPending=null;rememberCompact();notice('已放弃摘要重试；再次压缩会重新预览，摘要输入仍为空。')}});
+$('send').addEventListener('click',send);$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();void send()}});
+$('discard').addEventListener('click',()=>{if(state.busy)return;if(window.confirm('请求可能已经提交。放弃重试后再次发送会使用新幂等键，是否继续？')){state.pending=null;rememberPending();notice('已放弃重试，请先确认轨迹。')}});
+$('cancel').addEventListener('click',async()=>{try{await request('/api/sessions/'+encodeURIComponent(state.id)+'/cancel',{method:'POST',body:{reason:'用户在工作台取消'}});notice('已请求取消')}catch(err){notice(err.message)}});
+$('show-events').addEventListener('click',()=>{showTaskTab(false);$('inspector').textContent='点击上方事件查看完整数据；列表显示最近 500 条事件。'});
+$('show-context').addEventListener('click',async()=>{showTaskTab(false);if(!state.id)return;const id=state.id,version=state.version;try{const data=await request('/api/sessions/'+encodeURIComponent(id)+'/context');if(version===state.version)$('inspector').textContent=pretty(data)}catch(err){notice(err.message)}});
+$('show-tools').addEventListener('click',async()=>{showTaskTab(false);try{$('inspector').textContent=pretty(await request('/api/tools'))}catch(err){notice(err.message)}});
+function taskButtons(){
+ const disabled=!state.ready||!state.id||!state.orchestration||state.busy;
+ for(const id of ['new-child','new-workflow'])$(id).disabled=disabled||!!state.taskPending;
+ $('task-input').disabled=state.busy||!!state.taskPending;$('cancel-tree').disabled=disabled;
+ $('retry-task').disabled=disabled;$('discard-task').disabled=state.busy;
+ for(const id of ['retry-task','discard-task'])$(id).classList.toggle('hidden',!state.taskPending);
+}
+function restoreTasks(){
+ state.taskPending=null;state.knownWorkflows=[];
+ try{const p=JSON.parse(storage.get('dsh.task.'+state.id)||'null');if(p&&((p.kind==='jobs'&&typeof p.body?.prompt==='string'&&typeof p.body?.idempotency_key==='string')||(p.kind==='workflows'&&Array.isArray(p.body?.steps)&&p.body.steps.every(s=>typeof s==='string')&&typeof p.body?.key==='string')))state.taskPending=p}catch{}
+ try{const ids=JSON.parse(storage.get('dsh.workflows.'+state.id)||'[]');if(Array.isArray(ids))state.knownWorkflows=ids.filter(id=>typeof id==='string')}catch{}
+ $('task-input').value=state.taskPending?(state.taskPending.kind==='jobs'?state.taskPending.body.prompt:state.taskPending.body.steps.join('\n')):'';
+}
+function rememberTask(){if(state.taskPending)storage.set('dsh.task.'+state.id,JSON.stringify(state.taskPending));else storage.remove('dsh.task.'+state.id);taskButtons()}
+function showTaskTab(show){state.taskTab=show;$('task-panel').classList.toggle('hidden',!show);$('event-list').classList.toggle('hidden',show);$('inspector').classList.toggle('hidden',show);if(show)startTaskWatch();else state.taskController?.abort()}
+function startTaskWatch(){
+ state.taskController?.abort();state.taskController=new AbortController();const signal=state.taskController.signal,version=state.version;
+ if(!state.ready||!state.id){$('task-notice').textContent='请先连接并选择会话。';return}
+ if(!state.orchestration){$('task-notice').textContent='编排 Manager 未配置，任务 API 暂不可用。';return}
+ void (async()=>{while(!signal.aborted&&version===state.version&&state.taskTab){if(!state.busy)await refreshTasks(version,signal);await wait(1000,signal)}})();
+}
+async function refreshTasks(version,signal){
+ const parent=state.id,prefix='/api/sessions/'+encodeURIComponent(parent);
+ try{
+  const [jobs,list]=await Promise.all([request(prefix+'/jobs',{signal}),request(prefix+'/workflows',{signal})]);
+  if(signal.aborted||version!==state.version)return;
+  const workflows=new Map(list.workflows.map(w=>[w.id,w]));
+  for(const id of state.knownWorkflows){if(!workflows.has(id)){try{workflows.set(id,await request(prefix+'/workflows/'+encodeURIComponent(id),{signal}))}catch(err){if(err.status!==404)throw err}}}
+  if(signal.aborted||version!==state.version)return;
+  renderTasks(jobs.jobs,[...workflows.values()],parent);
+  $('task-notice').textContent=state.taskPending?'上次创建结果未确认；重试保留原内容及幂等键。':'每秒刷新；终态由会话事件回放确认。';
+ }catch(err){if(!signal.aborted&&version===state.version)$('task-notice').textContent=err.message}
+}
+function renderTasks(jobs,workflows,parent){
+ $('task-list').replaceChildren();
+ const labels={pending:'待执行',running:'执行中',succeeded:'已完成',failed:'失败',paused:'已暂停',cancelling:'取消中',cancelled:'已取消'};
+ const terminal=s=>['succeeded','failed','cancelled'].includes(s);
+ function action(root,label,path,confirmation,disabled=false){const b=el('button',label);b.disabled=disabled;b.addEventListener('click',()=>taskControl(parent,path,confirmation));root.append(b)}
+ for(const w of workflows){
+  const root=el('article',undefined,'task-card');root.append(el('h3','顺序工作流 · '+(labels[w.state]||w.state)),el('span',w.id,'sub'),el('p','已完成 '+w.current_step+' / '+w.steps.length+' 节点'));
+  const controls=el('div',undefined,'task-actions');
+  action(controls,'暂停','workflows/'+encodeURIComponent(w.id)+'/pause','',w.state!=='running');
+  action(controls,'恢复','workflows/'+encodeURIComponent(w.id)+'/resume','',w.state!=='paused');
+  action(controls,'取消','workflows/'+encodeURIComponent(w.id)+'/cancel','取消该工作流及其子任务树？已投递子会话将永久关闭新编排。',terminal(w.state)||w.state==='cancelling');root.append(controls);$('task-list').append(root);
+ }
+ for(const job of jobs){
+  const root=el('article',undefined,'task-card');root.append(el('h3',(job.workflow_id?'工作流节点 '+(job.step_index+1):'子任务')+' · '+(labels[job.state]||job.state)),el('p',job.prompt));
+  const link=el('a','打开子会话 '+job.child_session_id);link.href='#session='+encodeURIComponent(job.child_session_id);link.addEventListener('click',e=>{e.preventDefault();void openChildSession(parent,job.child_session_id)});root.append(link);
+  const controls=el('div',undefined,'task-actions');action(controls,'取消子任务树','jobs/'+encodeURIComponent(job.id)+'/cancel','取消该子任务及其后代，并永久关闭此子会话的新编排？',job.cancel_requested);root.append(controls);$('task-list').append(root);
+ }
+ if(!jobs.length&&!workflows.length)$('task-list').append(el('p','暂无已发现的任务。','sub'));
+}
+async function openChildSession(parent,id){
+ if(state.busy||parent!==state.id)return;
+ const version=state.version;
+ try{const child=await request('/api/sessions/'+encodeURIComponent(id));if(version!==state.version||state.busy)return;await select(child.id,child.title||child.id);await sessions()}
+ catch(err){notice(err.message)}
+}
+async function createTask(kind){
+ if(!state.ready||!state.id||!state.orchestration||state.busy)return;
+ if(!state.taskPending){
+  const text=$('task-input').value;if(!text.trim())return notice('请填写任务内容。');
+  const key=crypto.randomUUID();
+  if(kind==='workflows'){const steps=text.split(/\r?\n/).map(s=>s.trim());if(steps.some(s=>!s)||steps.length>128)return notice('工作流每行一个非空节点，最多 128 个节点。');state.taskPending={kind,body:{steps,key}}}
+  else state.taskPending={kind:'jobs',body:{prompt:text,idempotency_key:key}};
+  rememberTask();
+ }
+ const parent=state.id,pending=state.taskPending;state.busy=true;buttons();
+ try{
+  const result=await request('/api/sessions/'+encodeURIComponent(parent)+'/'+pending.kind,{method:'POST',body:pending.body});
+  if(pending.kind==='workflows'){state.knownWorkflows=[...new Set([...state.knownWorkflows,result.id])];storage.set('dsh.workflows.'+parent,JSON.stringify(state.knownWorkflows))}
+  state.taskPending=null;rememberTask();$('task-input').value='';notice('编排请求已保存；执行依赖服务端 Manager Run。');
+ }catch(err){notice(err.message+'；重试将复用原内容及幂等键。')}
+ finally{state.busy=false;buttons();if(state.taskTab)startTaskWatch()}
+}
+async function taskControl(parent,path,confirmation){
+ if(state.busy||!state.ready||!state.orchestration||parent!==state.id)return;
+ if(confirmation&&!window.confirm(confirmation))return;
+ state.busy=true;buttons();
+ try{await request('/api/sessions/'+encodeURIComponent(parent)+'/'+path,{method:'POST',body:{}});notice(path==='cancel-tree'?'已停止所有子任务并永久关闭本会话新编排；父 Turn 未取消。':'控制请求已接受，等待事件回放确认。')}
+ catch(err){notice(err.message+'；可重试同一控制操作。')}
+ finally{state.busy=false;buttons();if(state.taskTab)startTaskWatch()}
+}
+$('show-tasks').addEventListener('click',()=>showTaskTab(true));
+$('new-child').addEventListener('click',()=>createTask('jobs'));
+$('new-workflow').addEventListener('click',()=>createTask('workflows'));
+$('retry-task').addEventListener('click',()=>{if(state.taskPending)return createTask(state.taskPending.kind)});
+$('discard-task').addEventListener('click',()=>{if(state.busy||!state.taskPending)return;if(window.confirm('请求可能已提交。请先检查任务列表，放弃重试后再次创建会使用新幂等键，是否继续？')){state.taskPending=null;rememberTask()}});
+$('cancel-tree').addEventListener('click',()=>taskControl(state.id,'cancel-tree','停止所有子任务并永久关闭本会话新编排？此操作不可撤销，影响子任务、计划任务及工作流；不会取消父 Turn。'));
+window.addEventListener('beforeunload',()=>{state.controller?.abort();state.taskController?.abort()});
+void connect();
+</script>
+</body></html>

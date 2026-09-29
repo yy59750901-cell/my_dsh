@@ -1,0 +1,14 @@
+.DS_Store
+.workbuddy/
+logs/
+outputs/
+output/
+.playwright-cli/
+.idea/
+.vscode/
+*.local.json
+config.local.json
+*.db
+*.db-shm
+*.db-wal
+*.iml

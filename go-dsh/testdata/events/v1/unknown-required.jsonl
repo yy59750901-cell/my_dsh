@@ -1,0 +1,1 @@
+{"schemaVersion":{"major":1,"minor":1},"eventType":"runtime/new-required-state","eventId":"evt-001","sessionId":"ses-unknown","seq":"1","occurredAt":"2026-08-26T10:00:00Z","committedAt":"2026-08-26T10:00:00Z","replayPolicy":"required","data":{"futureField":true}}
